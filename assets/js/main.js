@@ -93,31 +93,51 @@ window.addEventListener('scroll', scrollActive)
 /*=============== LIGHT DARK THEME ===============*/
 const themeButton = document.getElementById('theme-button')
 const lightTheme = 'light-theme'
-const iconTheme = 'bx-sun'
 
-// Previously selected topic (if user selected)
+// Validate that the button exists
+if (!themeButton) {
+    console.error('Theme button not found!')
+} else {
+    console.log('Theme button found:', themeButton)
+}
+
+// Previously selected theme (if user selected)
 const selectedTheme = localStorage.getItem('selected-theme')
 const selectedIcon = localStorage.getItem('selected-icon')
 
-// We obtain the current theme that the interface has by validating the light-theme class
-const getCurrentTheme = () => document.body.classList.contains(lightTheme) ? 'dark' : 'light'
-const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'bx bx-moon' : 'bx bx-sun'
-
-// We validate if the user previously chose a topic
+// Apply saved theme on page load
 if (selectedTheme) {
-    // If the validation is fulfilled, we ask what the issue was to know if we activated or deactivated the light
-    document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](lightTheme)
-    themeButton.classList[selectedIcon === 'bx bx-moon' ? 'add' : 'remove'](iconTheme)
+    if (selectedTheme === 'light') {
+        document.body.classList.add(lightTheme)
+        themeButton.classList.remove('bx-moon')
+        themeButton.classList.add('bx-sun')
+    } else {
+        document.body.classList.remove(lightTheme)
+        themeButton.classList.add('bx-moon')
+        themeButton.classList.remove('bx-sun')
+    }
 }
 
-// Activate / deactivate the theme manually with the button
+// Toggle theme on button click
 themeButton.addEventListener('click', () => {
-    // Add or remove the light / icon theme
+    // Toggle light theme class
     document.body.classList.toggle(lightTheme)
-    themeButton.classList.toggle(iconTheme)
-    // We save the theme and the current icon that the user chose
-    localStorage.setItem('selected-theme', getCurrentTheme())
-    localStorage.setItem('selected-icon', getCurrentIcon())
+    
+    // Toggle icon
+    if (themeButton.classList.contains('bx-moon')) {
+        themeButton.classList.remove('bx-moon')
+        themeButton.classList.add('bx-sun')
+    } else {
+        themeButton.classList.remove('bx-sun')
+        themeButton.classList.add('bx-moon')
+    }
+    
+    // Save preference
+    const isLight = document.body.classList.contains(lightTheme)
+    localStorage.setItem('selected-theme', isLight ? 'light' : 'dark')
+    localStorage.setItem('selected-icon', themeButton.classList.contains('bx-sun') ? 'bx-sun' : 'bx-moon')
+    
+    console.log('Theme toggled. Light theme:', isLight)
 })
 
 /*=============== SCROLL REVEAL ANIMATION ===============*/
